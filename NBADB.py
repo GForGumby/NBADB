@@ -116,14 +116,24 @@ def load_all_lineups():
     
     for filename in os.listdir("lineups"):
         if filename.endswith(".json"):
-            with open(f"lineups/{filename}", "r") as f:
+            filepath = f"lineups/{filename}"
+            with open(filepath, "r") as f:
                 try:
                     lineup_data = json.load(f)
+                    # Add the filepath to the lineup data for deletion purposes
+                    lineup_data["filepath"] = filepath
                     lineups.append(lineup_data)
                 except json.JSONDecodeError:
                     st.error(f"Error loading {filename}")
     
     return lineups
+
+def delete_lineup(filepath):
+    """Delete a lineup file"""
+    if os.path.exists(filepath):
+        os.remove(filepath)
+        return True
+    return False
 
 def export_lineups_to_csv():
     """Export all lineups to a CSV file for analysis"""
@@ -201,7 +211,7 @@ def main():
     if 'show_admin' not in st.session_state:
         st.session_state.show_admin = False
     
-    # Admin panel (when activated)
+            # Admin panel (when activated)
     if st.session_state.show_admin:
         st.header("Admin Panel - All Entries")
         
@@ -212,7 +222,20 @@ def main():
         else:
             for lineup in lineups:
                 with st.expander(f"{lineup['username']} - Entered at {lineup['entry_time']}"):
-                    st.write("**Captain:** " + next((player["name"] for player in lineup["lineup"] if player["id"] == lineup["captain_id"]), "Unknown"))
+                    col1, col2 = st.columns([4, 1])
+                    
+                    with col1:
+                        st.write("**Captain:** " + next((player["name"] for player in lineup["lineup"] if player["id"] == lineup["captain_id"]), "Unknown"))
+                    
+                    with col2:
+                        # Add delete button
+                        if st.button("Delete Lineup", key=f"delete_{lineup['username']}"):
+                            if delete_lineup(lineup["filepath"]):
+                                st.success(f"Deleted lineup for {lineup['username']}")
+                                # Force refresh after short delay
+                                st.experimental_rerun()
+                            else:
+                                st.error("Failed to delete lineup")
                     
                     # Show all players
                     player_list = []
