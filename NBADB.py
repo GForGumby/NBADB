@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import random
-import plotly.express as px
+import json
+import os
+from datetime import datetime
 
 # Set page config
 st.set_page_config(
@@ -40,6 +41,20 @@ st.markdown("""
         color: #555;
         font-size: 14px;
     }
+    .saved-lineup {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #f5f5f5;
+    }
+    .admin-panel {
+        margin-top: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #f0f0f0;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -70,67 +85,165 @@ def get_dawg_bowl_contestants():
         {"id": 122, "name": "samolson31", "salary": 12000},
     ]
 
-def simulate_performance(selected_players, captain_id):
-    # Simple performance simulation
-    results = []
-    total_points = 0
+# Functions to save and load lineups
+def save_lineup(username, lineup, captain_id):
+    """Save a user's lineup to a JSON file"""
+    lineup_data = {
+        "username": username,
+        "entry_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "lineup": lineup,
+        "captain_id": captain_id
+    }
     
-    for player in selected_players:
-        # Generate random points between 20-60
-        fantasy_points = random.uniform(20, 60)
-        
-        # Apply captain multiplier
-        multiplier = 1.5 if player["id"] == captain_id else 1.0
-        final_points = fantasy_points * multiplier
-        
-        results.append({
-            "id": player["id"],
-            "name": player["name"],
-            "fantasy_points": fantasy_points,
-            "multiplier": multiplier,
-            "final_points": final_points
-        })
-        
-        total_points += final_points
+    # Create lineups directory if it doesn't exist
+    if not os.path.exists("lineups"):
+        os.makedirs("lineups")
     
-    # Sort by fantasy points for display
-    results.sort(key=lambda x: x["final_points"], reverse=True)
+    # Save to a file named after the username
+    filename = f"lineups/{username.lower().replace(' ', '_')}.json"
     
-    return results, total_points
+    with open(filename, "w") as f:
+        json.dump(lineup_data, f)
+    
+    return True
+
+def load_all_lineups():
+    """Load all saved lineups"""
+    lineups = []
+    
+    if not os.path.exists("lineups"):
+        return lineups
+    
+    for filename in os.listdir("lineups"):
+        if filename.endswith(".json"):
+            with open(f"lineups/{filename}", "r") as f:
+                try:
+                    lineup_data = json.load(f)
+                    lineups.append(lineup_data)
+                except json.JSONDecodeError:
+                    st.error(f"Error loading {filename}")
+    
+    return lineups
+
+def export_lineups_to_csv():
+    """Export all lineups to a CSV file for analysis"""
+    lineups = load_all_lineups()
+    
+    if not lineups:
+        return None
+    
+    # Create a list for CSV data
+    csv_data = []
+    
+    for lineup in lineups:
+        username = lineup["username"]
+        captain_id = lineup["captain_id"]
+        
+        # Add each player in the lineup
+        for player in lineup["lineup"]:
+            role = "Captain" if player["id"] == captain_id else "Flex"
+            csv_data.append({
+                "Username": username,
+                "Player": player["name"],
+                "Role": role,
+                "Salary": player["salary"],
+                "Entry Time": lineup["entry_time"]
+            })
+    
+    # Convert to DataFrame and save
+    df = pd.DataFrame(csv_data)
+    csv_filename = f"dawg_bowl_lineups_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+    df.to_csv(csv_filename, index=False)
+    
+    return csv_filename
 
 # Main app
 def main():
     st.title("🏀 NBA Dawg Bowl Fantasy Draft")
     
-    # Sidebar for instructions and settings
+    # Sidebar for instructions and admin functions
     with st.sidebar:
         st.header("How It Works")
         st.write("""
-        1. Draft your lineup of NBA Dawg Bowl competitors
-        2. Select 1 Captain (scores 1.5x points) and 5 Flex players
-        3. Stay under the salary cap
-        4. Submit your lineup to see results
+        1. Enter your username
+        2. Draft your lineup of NBA Dawg Bowl competitors
+        3. Select 1 Captain (will score 1.5x points) and 5 Flex players
+        4. Stay under the salary cap
+        5. Submit your lineup
+        
+        After the contest concludes, the admin can enter the fantasy points for each player and see who wins!
         """)
         
         st.header("Settings")
         salary_cap = st.slider("Salary Cap", 40000, 60000, 50000, 1000)
-    
+        
+        # Admin section in sidebar
+        st.header("Admin Functions")
+        admin_password = st.text_input("Admin Password", type="password")
+        
+        if admin_password == "admin123":  # Simple password for demo
+            if st.button("View All Entries"):
+                st.session_state.show_admin = True
+            if st.button("Export All Entries to CSV"):
+                csv_file = export_lineups_to_csv()
+                if csv_file:
+                    st.success(f"Exported to {csv_file}")
+                else:
+                    st.warning("No entries to export")
+        
     # Initialize session state
     if 'selected_players' not in st.session_state:
         st.session_state.selected_players = []
     if 'captain_id' not in st.session_state:
         st.session_state.captain_id = None
-    if 'simulated' not in st.session_state:
-        st.session_state.simulated = False
-    if 'simulation_results' not in st.session_state:
-        st.session_state.simulation_results = []
-    if 'total_points' not in st.session_state:
-        st.session_state.total_points = 0
+    if 'submitted' not in st.session_state:
+        st.session_state.submitted = False
+    if 'show_admin' not in st.session_state:
+        st.session_state.show_admin = False
+    
+    # Admin panel (when activated)
+    if st.session_state.show_admin:
+        st.header("Admin Panel - All Entries")
         
-    # Main content
-    if not st.session_state.simulated:
+        lineups = load_all_lineups()
+        
+        if not lineups:
+            st.warning("No entries found")
+        else:
+            for lineup in lineups:
+                with st.expander(f"{lineup['username']} - Entered at {lineup['entry_time']}"):
+                    st.write("**Captain:** " + next((player["name"] for player in lineup["lineup"] if player["id"] == lineup["captain_id"]), "Unknown"))
+                    
+                    # Show all players
+                    player_list = []
+                    for player in lineup["lineup"]:
+                        role = "Captain" if player["id"] == lineup["captain_id"] else "Flex"
+                        player_list.append({
+                            "Player": player["name"],
+                            "Role": role,
+                            "Salary": f"${player['salary']}"
+                        })
+                    
+                    st.table(pd.DataFrame(player_list))
+        
+        if st.button("Back to Draft"):
+            st.session_state.show_admin = False
+            st.experimental_rerun()
+            
+        # Stop here if admin panel is shown
+        return
+        
+    # Main Draft Screen
+    if not st.session_state.submitted:
+        # Get username
+        username = st.text_input("Enter Your Username")
+        
+        if not username:
+            st.warning("Please enter your username to continue")
+            return
+        
         # Show available players
-        st.header("Available Dawg Bowl Competitors")
+        st.header("Available Competitors")
         all_players = get_dawg_bowl_contestants()
         
         # Filter and sort options
@@ -152,7 +265,7 @@ def main():
         elif sort_by == "Salary (Low to High)":
             filtered_players.sort(key=lambda x: x["salary"])
         elif sort_by == "Name (A-Z)":
-            filtered_players.sort(key=lambda x: x["name"])
+            filtered_players.sort(key=lambda x: x["name"].lower())
         
         # Display players in a grid
         col1, col2, col3 = st.columns(3)
@@ -225,12 +338,11 @@ def main():
             # Check if lineup is valid for submission
             if len(st.session_state.selected_players) == 6 and st.session_state.captain_id is not None and total_salary <= salary_cap:
                 if st.button("Submit Lineup", type="primary"):
-                    # Simulate contest results
-                    results, total = simulate_performance(st.session_state.selected_players, st.session_state.captain_id)
-                    st.session_state.simulation_results = results
-                    st.session_state.total_points = total
-                    st.session_state.simulated = True
-                    st.experimental_rerun()
+                    if save_lineup(username, st.session_state.selected_players, st.session_state.captain_id):
+                        st.session_state.submitted = True
+                        st.experimental_rerun()
+                    else:
+                        st.error("Error saving lineup. Please try again.")
             else:
                 if len(st.session_state.selected_players) < 6:
                     st.warning(f"Please select {6 - len(st.session_state.selected_players)} more players")
@@ -240,72 +352,28 @@ def main():
                     st.error(f"Lineup exceeds salary cap by ${total_salary - salary_cap:,}")
     
     else:
-        # Show simulation results
-        st.header("Results")
+        # Show submission confirmation
+        st.success("Your lineup has been submitted successfully!")
         
-        # Add a back button
-        if st.button("Create New Lineup"):
+        st.write("### Your Lineup")
+        
+        # Show the lineup that was submitted
+        for player in st.session_state.selected_players:
+            is_captain = player["id"] == st.session_state.captain_id
+            role = "CAPTAIN" if is_captain else "FLEX"
+            
+            st.markdown(f"""
+            <div class="player-card {'captain' if is_captain else ''}">
+                <div class="player-name">{player["name"]}</div>
+                <div class="player-details">{role} | ${player["salary"]}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        if st.button("Create Another Lineup"):
             st.session_state.selected_players = []
             st.session_state.captain_id = None
-            st.session_state.simulated = False
-            st.session_state.simulation_results = []
-            st.session_state.total_points = 0
+            st.session_state.submitted = False
             st.experimental_rerun()
-        
-        st.subheader(f"Total Fantasy Points: {st.session_state.total_points:.2f}")
-        
-        # Visualize player contributions
-        fig = px.bar(
-            [result for result in st.session_state.simulation_results],
-            x="name",
-            y="final_points",
-            title="Fantasy Points by Player",
-            labels={"name": "Player", "final_points": "Fantasy Points"},
-            text="final_points"
-        )
-        fig.update_traces(texttemplate='%{text:.1f}', textposition='outside')
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Display results table
-        performance_data = []
-        for result in st.session_state.simulation_results:
-            performance_data.append({
-                "Player": f"{result['name']} {'(C)' if result['multiplier'] > 1 else ''}",
-                "Base Points": round(result["fantasy_points"], 1),
-                "Multiplier": result["multiplier"],
-                "Total Points": round(result["final_points"], 1)
-            })
-        
-        performance_df = pd.DataFrame(performance_data)
-        st.table(performance_df)
-        
-        # Mock leaderboard
-        st.header("Leaderboard")
-        
-        # Generate random scores around the user's score
-        user_score = st.session_state.total_points
-        other_scores = [random.uniform(user_score * 0.8, user_score * 1.2) for _ in range(9)]
-        other_scores.append(user_score)
-        all_scores = sorted(other_scores, reverse=True)
-        user_rank = all_scores.index(user_score) + 1
-        
-        # Create user list properly
-        user_names = ["DawgMaster", "HustleKing", "CourtGeneral", "DefenseWizard", "FlexCapitol"]
-        # Add remaining names
-        for i in range(5, 10):
-            user_names.append(f"Player{i+1}")
-        # Replace the correct position with "You"
-        user_names[user_rank - 1] = "You"
-        
-        leaderboard_data = {
-            "Rank": list(range(1, 11)),
-            "User": user_names,
-            "Points": [round(score, 2) for score in all_scores],
-            "Prize": ["$1,000", "$500", "$250", "$100", "$50", "$25", "$25", "$25", "$25", "$0"]
-        }
-        
-        leaderboard_df = pd.DataFrame(leaderboard_data)
-        st.table(leaderboard_df)
 
 if __name__ == "__main__":
     main()
