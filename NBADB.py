@@ -444,7 +444,7 @@ def main():
         
         leaderboard_data = {
             "Rank": list(range(1, 11)),
-            "User": ["DawgMaster", "HustleKing", "CourtGeneral", "DefenseWizard", "FlexCapitol", 
+            "User": ["DawgMaster", "HustleKing", "CourtGeneral", "DefenseWizard", "FlexCapitol"] 
                      "You" if i == user_rank - 1 else f"Player{i+1}" for i in range(10)],
             "Points": [round(score, 2) for score in all_scores],
             "Prize": ["$1,000", "$500", "$250", "$100", "$50", "$25", "$25", "$25", "$25", "$0"]
