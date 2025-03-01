@@ -442,10 +442,17 @@ def main():
         all_scores = sorted(other_scores, reverse=True)
         user_rank = all_scores.index(user_score) + 1
         
+        # Create user list properly
+        user_names = ["DawgMaster", "HustleKing", "CourtGeneral", "DefenseWizard", "FlexCapitol"]
+        # Add remaining names
+        for i in range(5, 10):
+            user_names.append(f"Player{i+1}")
+        # Replace the correct position with "You"
+        user_names[user_rank - 1] = "You"
+        
         leaderboard_data = {
             "Rank": list(range(1, 11)),
-            "User": ["DawgMaster", "HustleKing", "CourtGeneral", "DefenseWizard", "FlexCapitol" 
-                     "You" if i == user_rank - 1 else f"Player{i+1}" for i in range(10)],
+            "User": user_names,
             "Points": [round(score, 2) for score in all_scores],
             "Prize": ["$1,000", "$500", "$250", "$100", "$50", "$25", "$25", "$25", "$25", "$0"]
         }
