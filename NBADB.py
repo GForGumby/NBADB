@@ -233,7 +233,7 @@ def main():
                             if delete_lineup(lineup["filepath"]):
                                 st.success(f"Deleted lineup for {lineup['username']}")
                                 # Force refresh after short delay
-                                st.experimental_rerun()
+                                st.rerun()
                             else:
                                 st.error("Failed to delete lineup")
                     
@@ -251,7 +251,7 @@ def main():
         
         if st.button("Back to Draft"):
             st.session_state.show_admin = False
-            st.experimental_rerun()
+            st.rerun()
             
         # Stop here if admin panel is shown
         return
@@ -311,13 +311,13 @@ def main():
                             if len(st.session_state.selected_players) < 6:
                                 if st.button(f"Add as FLEX", key=f"flex_{player['id']}"):
                                     st.session_state.selected_players.append(player)
-                                    st.experimental_rerun()
+                                    st.rerun()
                         else:
                             if st.button(f"Remove", key=f"remove_{player['id']}"):
                                 st.session_state.selected_players = [p for p in st.session_state.selected_players if p["id"] != player["id"]]
                                 if st.session_state.captain_id == player["id"]:
                                     st.session_state.captain_id = None
-                                st.experimental_rerun()
+                                st.rerun()
                     
                     with col_b:
                         if player["id"] not in [p["id"] for p in st.session_state.selected_players]:
@@ -325,11 +325,11 @@ def main():
                                 if st.button(f"Add as CAPTAIN", key=f"captain_{player['id']}"):
                                     st.session_state.selected_players.append(player)
                                     st.session_state.captain_id = player["id"]
-                                    st.experimental_rerun()
+                                    st.rerun()
                         elif st.session_state.captain_id != player["id"]:
                             if st.button(f"Make CAPTAIN", key=f"make_captain_{player['id']}"):
                                 st.session_state.captain_id = player["id"]
-                                st.experimental_rerun()
+                                st.rerun()
         
         # Show selected lineup
         st.header("Your Lineup")
@@ -363,7 +363,7 @@ def main():
                 if st.button("Submit Lineup", type="primary"):
                     if save_lineup(username, st.session_state.selected_players, st.session_state.captain_id):
                         st.session_state.submitted = True
-                        st.experimental_rerun()
+                        st.rerun()
                     else:
                         st.error("Error saving lineup. Please try again.")
             else:
@@ -396,7 +396,7 @@ def main():
             st.session_state.selected_players = []
             st.session_state.captain_id = None
             st.session_state.submitted = False
-            st.experimental_rerun()
+            st.rerun()
 
 if __name__ == "__main__":
     main()
