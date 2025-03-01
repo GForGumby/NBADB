@@ -34,6 +34,7 @@ st.markdown("""
     .player-name {
         font-weight: bold;
         font-size: 18px;
+        color: #000000;
     }
     .player-details {
         color: #555;
