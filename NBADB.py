@@ -8,8 +8,8 @@ import plotly.graph_objects as go
 
 # Set page config
 st.set_page_config(
-    page_title="Fantasy Players Contest",
-    page_icon="🏆",
+    page_title="NBA Dawg Bowl Fantasy Draft",
+    page_icon="🏀",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -70,158 +70,126 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Mock data functions
-def get_available_contests():
+# Mock data functions for NBA Dawg Bowl contestants
+def get_dawg_bowl_contestants():
     return [
-        {
-            "id": 1,
-            "name": "NBA DFS $10K Showdown",
-            "entry_fee": 20,
-            "prize_pool": 10000,
-            "max_entries": 100,
-            "current_entries": 87,
-            "start_time": "Today at 7:30 PM ET",
-            "teams": ["Lakers vs Celtics"]
-        },
-        {
-            "id": 2,
-            "name": "NBA $5K Winner Takes All",
-            "entry_fee": 50,
-            "prize_pool": 5000,
-            "max_entries": 50,
-            "current_entries": 32,
-            "start_time": "Today at 8:00 PM ET",
-            "teams": ["Warriors vs Nets"]
-        },
-        {
-            "id": 3,
-            "name": "NBA $2K 50/50",
-            "entry_fee": 10,
-            "prize_pool": 2000,
-            "max_entries": 200,
-            "current_entries": 156,
-            "start_time": "Today at 9:00 PM ET",
-            "teams": ["Heat vs Mavericks"]
-        }
+        {"id": 101, "name": "SamOlson31", "team": "Team Alpha", "avg_points": 48.7, "dawg_rating": 9.2, "salary": 9800, 
+         "stats": "3.5 blocks/game, 8.7 dunks/tournament", "previous_finish": "Runner-up (2024)"},
+        {"id": 102, "name": "In3us", "team": "Team Alpha", "avg_points": 52.5, "dawg_rating": 9.5, "salary": 10200, 
+         "stats": "42% shooting, 12.3 steals/tournament", "previous_finish": "Quarter-finals (2024)"},
+        {"id": 103, "name": "bestballviper", "team": "Team Bravo", "avg_points": 51.8, "dawg_rating": 9.8, "salary": 10500, 
+         "stats": "Most Defensive Player 2024", "previous_finish": "Champion (2024)"},
+        {"id": 104, "name": "DFSKing99", "team": "Team Bravo", "avg_points": 47.2, "dawg_rating": 8.9, "salary": 9500, 
+         "stats": "11.2 rebounds/game, 5.5 blocks/tournament", "previous_finish": "Semi-finals (2024)"},
+        {"id": 105, "name": "NBAGuru42", "team": "Team Alpha", "avg_points": 44.3, "dawg_rating": 8.5, "salary": 8800, 
+         "stats": "3-pt specialist, 45% from downtown", "previous_finish": "Quarter-finals (2024)"},
+        {"id": 106, "name": "FantasyPro", "team": "Team Bravo", "avg_points": 46.9, "dawg_rating": 8.7, "salary": 9300, 
+         "stats": "Most Valuable Dawg nominee 2024", "previous_finish": "Semi-finals (2024)"},
+        {"id": 107, "name": "CelticsNation", "team": "Team Charlie", "avg_points": 42.1, "dawg_rating": 7.8, "salary": 8400, 
+         "stats": "Fast break specialist, 7.3 assists/game", "previous_finish": "Round of 16 (2024)"},
+        {"id": 108, "name": "LakeShow23", "team": "Team Charlie", "avg_points": 43.6, "dawg_rating": 8.2, "salary": 8900, 
+         "stats": "Clutch performer, 89% FT shooting", "previous_finish": "Quarter-finals (2024)"},
+        {"id": 109, "name": "HoopDreams", "team": "Team Delta", "avg_points": 38.4, "dawg_rating": 7.2, "salary": 7900, 
+         "stats": "Rising star, first Dawg Bowl appearance", "previous_finish": "N/A (First appearance)"},
+        {"id": 110, "name": "StatKing", "team": "Team Delta", "avg_points": 41.5, "dawg_rating": 7.6, "salary": 7600, 
+         "stats": "Consistent scorer, 18.7 ppg", "previous_finish": "Round of 16 (2024)"},
+        {"id": 111, "name": "DFSmaster", "team": "Team Echo", "avg_points": 45.7, "dawg_rating": 8.4, "salary": 9400, 
+         "stats": "Double-double machine", "previous_finish": "Semi-finals (2024)"},
+        {"id": 112, "name": "LineupLock", "team": "Team Echo", "avg_points": 44.3, "dawg_rating": 8.1, "salary": 9100, 
+         "stats": "Defensive specialist, 2.3 steals/game", "previous_finish": "Quarter-finals (2024)"},
+        {"id": 113, "name": "OptimalDFS", "team": "Team Foxtrot", "avg_points": 39.2, "dawg_rating": 7.4, "salary": 8600, 
+         "stats": "Inside-outside threat", "previous_finish": "Round of 16 (2024)"},
+        {"id": 114, "name": "PickSixer", "team": "Team Foxtrot", "avg_points": 35.8, "dawg_rating": 6.8, "salary": 7100, 
+         "stats": "Sixth man specialist", "previous_finish": "Round of 32 (2024)"},
+        {"id": 115, "name": "CapWiz", "team": "Team Golf", "avg_points": 38.3, "dawg_rating": 7.0, "salary": 7400, 
+         "stats": "Hustle stats leader", "previous_finish": "Round of 32 (2024)"},
+        {"id": 116, "name": "FadeThePublic", "team": "Team Golf", "avg_points": 42.7, "dawg_rating": 7.9, "salary": 8200, 
+         "stats": "Momentum changer, crowd favorite", "previous_finish": "Round of 16 (2024)"},
+        {"id": 117, "name": "SlateBreaker", "team": "Team Hotel", "avg_points": 46.8, "dawg_rating": 8.6, "salary": 9000, 
+         "stats": "All-around player, triple-double threat", "previous_finish": "Quarter-finals (2024)"},
+        {"id": 118, "name": "ValueHunter", "team": "Team Hotel", "avg_points": 40.5, "dawg_rating": 7.5, "salary": 8000, 
+         "stats": "Efficient shooter, 52% FG", "previous_finish": "Round of 32 (2024)"},
     ]
 
-def get_fantasy_players(contest_id):
-    # Mock fantasy player data (usernames) with historical performance and cost
-    players = []
-    
-    if contest_id == 1:
-        players = [
-            {"id": 101, "username": "SamOlson31", "avg_finish": 12.3, "avg_points": 348.7, "contest_history": "1st, 5th, 12th, 8th, 35th", "salary": 9800, "team": "Team A"},
-            {"id": 102, "username": "In3us", "avg_finish": 7.8, "avg_points": 362.5, "contest_history": "2nd, 4th, 9th, 16th", "salary": 10200, "team": "Team A"},
-            {"id": 103, "username": "bestballviper", "avg_finish": 5.2, "avg_points": 371.8, "contest_history": "1st, 3rd, 7th, 10th", "salary": 10500, "team": "Team B"},
-            {"id": 104, "username": "DFSKing99", "avg_finish": 8.9, "avg_points": 357.2, "contest_history": "2nd, 6th, 8th, 19th", "salary": 9500, "team": "Team B"},
-            {"id": 105, "username": "NBAGuru42", "avg_finish": 15.7, "avg_points": 341.3, "contest_history": "5th, 11th, 18th, 29th", "salary": 8800, "team": "Team A"},
-            {"id": 106, "username": "FantasyPro", "avg_finish": 10.1, "avg_points": 352.9, "contest_history": "3rd, 7th, 13th, 17th", "salary": 9300, "team": "Team B"},
-            {"id": 107, "username": "CelticsNation", "avg_finish": 18.3, "avg_points": 335.1, "contest_history": "8th, 15th, 22nd, 28th", "salary": 8400, "team": "Team A"},
-            {"id": 108, "username": "LakeShow23", "avg_finish": 14.2, "avg_points": 343.6, "contest_history": "6th, 12th, 15th, 24th", "salary": 8900, "team": "Team B"},
-            {"id": 109, "username": "HoopDreams", "avg_finish": 22.7, "avg_points": 328.4, "contest_history": "11th, 19th, 26th, 35th", "salary": 7900, "team": "Team A"},
-            {"id": 110, "username": "StatKing", "avg_finish": 25.1, "avg_points": 321.5, "contest_history": "14th, 21st, 27th, 38th", "salary": 7600, "team": "Team B"},
-            {"id": 111, "username": "DFSmaster", "avg_finish": 9.5, "avg_points": 355.7, "contest_history": "3rd, 8th, 10th, 17th", "salary": 9400, "team": "Team A"},
-            {"id": 112, "username": "LineupLock", "avg_finish": 11.8, "avg_points": 350.3, "contest_history": "4th, 9th, 12th, 22nd", "salary": 9100, "team": "Team B"},
-            {"id": 113, "username": "OptimalDFS", "avg_finish": 16.4, "avg_points": 339.2, "contest_history": "7th, 13th, 19th, 26th", "salary": 8600, "team": "Team A"},
-            {"id": 114, "username": "PickSixer", "avg_finish": 30.2, "avg_points": 312.8, "contest_history": "18th, 25th, 33rd, 45th", "salary": 7100, "team": "Team B"},
-            {"id": 115, "username": "CapWiz", "avg_finish": 27.8, "avg_points": 318.3, "contest_history": "16th, 24th, 31st, 40th", "salary": 7400, "team": "Team A"},
-            {"id": 116, "username": "FadeThePublic", "avg_finish": 19.6, "avg_points": 332.7, "contest_history": "9th, 17th, 23rd, 29th", "salary": 8200, "team": "Team B"},
-            {"id": 117, "username": "SlateBreaker", "avg_finish": 13.1, "avg_points": 346.8, "contest_history": "5th, 10th, 14th, 23rd", "salary": 9000, "team": "Team A"},
-            {"id": 118, "username": "ValueHunter", "avg_finish": 21.3, "avg_points": 330.5, "contest_history": "10th, 18th, 25th, 32nd", "salary": 8000, "team": "Team B"},
-        ]
-    # Add more contests here with their fantasy players...
-    elif contest_id == 2:
-        players = [
-            {"id": 201, "username": "WarriorsFan30", "avg_finish": 6.7, "avg_points": 365.2, "contest_history": "1st, 4th, 8th, 13th", "salary": 9900, "team": "Team C"},
-            {"id": 202, "username": "NetsDynasty", "avg_finish": 9.3, "avg_points": 356.1, "contest_history": "3rd, 5th, 11th, 18th", "salary": 9400, "team": "Team D"},
-            # Add more players for this contest...
-        ]
-    
-    return players
-
-def simulate_contest_results(selected_players, captain_id):
+def simulate_dawg_bowl_performance(selected_players, captain_id):
     # Simulate fantasy performance
     results = []
     total_points = 0
     
-    # Generate contest finishing positions for all selected players
-    contest_finish_positions = []
+    # Generate random performance stats for each player
     for player in selected_players:
-        # Generate random finish position around their average
-        avg_finish = player["avg_finish"]
-        # More variance for lower-ranked players
-        variance = max(5, avg_finish * 0.4)
-        finish = max(1, int(random.gauss(avg_finish, variance)))
+        # Base points correlated to dawg rating and average points
+        base_points = player["avg_points"] * (0.8 + random.random() * 0.4)  # 80-120% of average
         
-        # Calculate fantasy points based on finish position
-        # 1st: 100 pts, 2nd: 90 pts, 3rd: 85 pts, then decrease by smaller amounts
-        if finish == 1:
-            fantasy_points = 100
-        elif finish == 2:
-            fantasy_points = 90
-        elif finish == 3:
-            fantasy_points = 85
-        elif finish <= 5:
-            fantasy_points = 80 - ((finish - 3) * 5)
-        elif finish <= 10:
-            fantasy_points = 70 - ((finish - 5) * 3)
-        elif finish <= 20:
-            fantasy_points = 55 - ((finish - 10) * 2)
-        elif finish <= 50:
-            fantasy_points = 35 - ((finish - 20) * 0.5)
-        else:
-            fantasy_points = max(10, 20 - ((finish - 50) * 0.2))
+        # Generate random stats
+        points = round(random.uniform(10, 30), 1)
+        rebounds = round(random.uniform(3, 12), 1)
+        assists = round(random.uniform(2, 8), 1)
+        blocks = round(random.uniform(0, 4), 1)
+        steals = round(random.uniform(0, 3), 1)
+        
+        # Calculate fantasy points
+        fantasy_points = points + (rebounds * 1.2) + (assists * 1.5) + (blocks * 3) + (steals * 3)
+        
+        # Adjust based on dawg rating - higher dawg rating means more consistency
+        consistency_factor = 0.9 + (player["dawg_rating"] / 100)
+        adjusted_points = fantasy_points * consistency_factor
         
         # Apply captain multiplier
         multiplier = 1.5 if player["id"] == captain_id else 1.0
-        final_points = fantasy_points * multiplier
+        final_points = adjusted_points * multiplier
         
         results.append({
             "id": player["id"],
-            "username": player["username"],
+            "name": player["name"],
             "team": player["team"],
-            "finish_position": finish,
-            "fantasy_points": fantasy_points,
+            "dawg_rating": player["dawg_rating"],
+            "points": points,
+            "rebounds": rebounds,
+            "assists": assists,
+            "blocks": blocks,
+            "steals": steals,
+            "fantasy_points": adjusted_points,
             "multiplier": multiplier,
             "final_points": final_points
         })
         
         total_points += final_points
     
-    # Sort by finish position for display
-    results.sort(key=lambda x: x["finish_position"])
+    # Sort by fantasy points for display
+    results.sort(key=lambda x: x["final_points"], reverse=True)
     
     return results, total_points
 
 # Main app
 def main():
-    st.title("🏆 Fantasy Players Contest")
+    st.title("🏀 NBA Dawg Bowl Fantasy Draft")
     
     # Sidebar for instructions and settings
     with st.sidebar:
         st.header("How It Works")
         st.write("""
-        1. Select a contest to enter
-        2. Draft your lineup of fantasy players (other DFS users)
-        3. Select 1 Captain (scores 1.5x points) and 5 Flex players
-        4. Stay under the salary cap
-        5. Earn points based on how your drafted players finish in the contest
+        1. Draft your lineup of NBA Dawg Bowl competitors
+        2. Select 1 Captain (scores 1.5x points) and 5 Flex players
+        3. Stay under the salary cap
+        4. Earn points based on player performance in the Dawg Bowl
+        5. Compete against friends for the highest score
         """)
         
         st.header("Settings")
         salary_cap = st.slider("Salary Cap", 40000, 60000, 50000, 1000)
         entry_fee = st.number_input("Entry Fee ($)", 1, 100, 20)
         
-        st.header("My Entries")
-        st.write("You have 0 active entries")
+        st.header("About NBA Dawg Bowl")
+        st.write("""
+        The NBA Dawg Bowl is an intense competition showcasing the toughest, most competitive players in basketball. 
         
-        if st.button("View Past Results"):
-            st.write("No past results found")
+        These players bring energy, hustle, and a fierce competitive spirit to every play - the true definition of "dawgs" on the court.
+        
+        Draft wisely - dawg mentality matters!
+        """)
     
     # Initialize session state
-    if 'selected_contest' not in st.session_state:
-        st.session_state.selected_contest = None
     if 'selected_players' not in st.session_state:
         st.session_state.selected_players = []
     if 'captain_id' not in st.session_state:
@@ -234,174 +202,139 @@ def main():
         st.session_state.total_points = 0
         
     # Main content
-    if not st.session_state.selected_contest and not st.session_state.simulated:
-        st.header("Available Contests")
+    if not st.session_state.simulated:
+        # Show contest banner
+        st.header("NBA Dawg Bowl 2025")
+        st.subheader("Draft your ultimate lineup of basketball dawgs!")
         
-        contests = get_available_contests()
-        for contest in contests:
-            with st.container():
-                st.markdown(f"""
-                <div class="contest-card">
-                    <div class="contest-title">{contest['name']}</div>
-                    <div class="contest-details">
-                        Entry Fee: ${contest['entry_fee']} | Prize Pool: ${contest['prize_pool']:,} | 
-                        Entries: {contest['current_entries']}/{contest['max_entries']} | {contest['start_time']}
-                    </div>
-                    <div class="contest-details">
-                        Teams: {', '.join(contest['teams'])}
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                if st.button(f"Enter Contest", key=f"enter_{contest['id']}"):
-                    st.session_state.selected_contest = contest["id"]
-                    st.experimental_rerun()
-    
-    elif not st.session_state.simulated:
-        # Contest selected, show player selection
-        contest_id = st.session_state.selected_contest
-        contests = get_available_contests()
-        selected_contest = next((c for c in contests if c["id"] == contest_id), None)
+        # Show available players
+        st.header("Available Dawg Bowl Competitors")
+        all_players = get_dawg_bowl_contestants()
         
-        if selected_contest:
-            st.header(f"Enter: {selected_contest['name']}")
-            st.subheader(f"Prize Pool: ${selected_contest['prize_pool']:,} | Entry Fee: ${selected_contest['entry_fee']}")
-            
-            # Back button
-            if st.button("← Back to Contests"):
-                st.session_state.selected_contest = None
-                st.experimental_rerun()
-            
-            # Show available fantasy players
-            st.header("Available Fantasy Players")
-            fantasy_players = get_fantasy_players(contest_id)
-            
-            # Filter and sort options
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                sort_by = st.selectbox("Sort By", ["Salary (High to Low)", "Salary (Low to High)", 
-                                                  "Avg Finish (Best)", "Avg Finish (Worst)",
-                                                  "Avg Points (High to Low)", "Avg Points (Low to High)"])
-            with col2:
-                team_filter = st.selectbox("Filter by Team", ["All"] + list(set(p["team"] for p in fantasy_players)))
-            with col3:
-                search = st.text_input("Search Username")
-            
-            # Apply filters and sorting
-            filtered_players = fantasy_players
-            if team_filter != "All":
-                filtered_players = [p for p in filtered_players if p["team"] == team_filter]
-            
-            if search:
-                filtered_players = [p for p in filtered_players if search.lower() in p["username"].lower()]
-            
-            # Apply sorting
-            if sort_by == "Salary (High to Low)":
-                filtered_players.sort(key=lambda x: x["salary"], reverse=True)
-            elif sort_by == "Salary (Low to High)":
-                filtered_players.sort(key=lambda x: x["salary"])
-            elif sort_by == "Avg Finish (Best)":
-                filtered_players.sort(key=lambda x: x["avg_finish"])
-            elif sort_by == "Avg Finish (Worst)":
-                filtered_players.sort(key=lambda x: x["avg_finish"], reverse=True)
-            elif sort_by == "Avg Points (High to Low)":
-                filtered_players.sort(key=lambda x: x["avg_points"], reverse=True)
-            elif sort_by == "Avg Points (Low to High)":
-                filtered_players.sort(key=lambda x: x["avg_points"])
-            
-            # Display players in a grid
-            col1, col2 = st.columns(2)
-            
-            for i, player in enumerate(filtered_players):
-                # Alternate between columns
-                with col1 if i % 2 == 0 else col2:
-                    with st.container():
-                        st.markdown(f"""
-                        <div class="player-card">
-                            <div class="player-name">{player["username"]}</div>
-                            <div class="player-details">{player["team"]} | ${player["salary"]}</div>
-                            <div class="player-stats">Avg Finish: {player["avg_finish"]} | Avg Points: {player["avg_points"]}</div>
-                            <div class="player-stats">History: {player["contest_history"]}</div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                        
-                        col_a, col_b = st.columns(2)
-                        with col_a:
-                            if player["id"] not in [p["id"] for p in st.session_state.selected_players]:
-                                if len(st.session_state.selected_players) < 6:
-                                    if st.button(f"Add as FLEX", key=f"flex_{player['id']}"):
-                                        st.session_state.selected_players.append(player)
-                                        st.experimental_rerun()
-                            else:
-                                if st.button(f"Remove", key=f"remove_{player['id']}"):
-                                    st.session_state.selected_players = [p for p in st.session_state.selected_players if p["id"] != player["id"]]
-                                    if st.session_state.captain_id == player["id"]:
-                                        st.session_state.captain_id = None
+        # Filter and sort options
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            sort_by = st.selectbox("Sort By", ["Dawg Rating (High to Low)", "Salary (High to Low)", "Salary (Low to High)", 
+                                              "Avg Points (High to Low)", "Team"])
+        with col2:
+            team_filter = st.selectbox("Filter by Team", ["All"] + list(set(p["team"] for p in all_players)))
+        with col3:
+            search = st.text_input("Search Player")
+        
+        # Apply filters and sorting
+        filtered_players = all_players
+        if team_filter != "All":
+            filtered_players = [p for p in filtered_players if p["team"] == team_filter]
+        
+        if search:
+            filtered_players = [p for p in filtered_players if search.lower() in p["name"].lower()]
+        
+        # Apply sorting
+        if sort_by == "Dawg Rating (High to Low)":
+            filtered_players.sort(key=lambda x: x["dawg_rating"], reverse=True)
+        elif sort_by == "Salary (High to Low)":
+            filtered_players.sort(key=lambda x: x["salary"], reverse=True)
+        elif sort_by == "Salary (Low to High)":
+            filtered_players.sort(key=lambda x: x["salary"])
+        elif sort_by == "Avg Points (High to Low)":
+            filtered_players.sort(key=lambda x: x["avg_points"], reverse=True)
+        elif sort_by == "Team":
+            filtered_players.sort(key=lambda x: x["team"])
+        
+        # Display players in a grid
+        col1, col2 = st.columns(2)
+        
+        for i, player in enumerate(filtered_players):
+            # Alternate between columns
+            with col1 if i % 2 == 0 else col2:
+                with st.container():
+                    st.markdown(f"""
+                    <div class="player-card">
+                        <div class="player-name">{player["name"]}</div>
+                        <div class="player-details">{player["team"]} | ${player["salary"]} | Dawg Rating: {player["dawg_rating"]}/10</div>
+                        <div class="player-stats">Avg Fantasy Points: {player["avg_points"]}</div>
+                        <div class="player-stats">Stats: {player["stats"]}</div>
+                        <div class="player-stats">Previous: {player["previous_finish"]}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    col_a, col_b = st.columns(2)
+                    with col_a:
+                        if player["id"] not in [p["id"] for p in st.session_state.selected_players]:
+                            if len(st.session_state.selected_players) < 6:
+                                if st.button(f"Add as FLEX", key=f"flex_{player['id']}"):
+                                    st.session_state.selected_players.append(player)
                                     st.experimental_rerun()
-                        
-                        with col_b:
-                            if player["id"] not in [p["id"] for p in st.session_state.selected_players]:
-                                if len(st.session_state.selected_players) < 6:
-                                    if st.button(f"Add as CAPTAIN", key=f"captain_{player['id']}"):
-                                        st.session_state.selected_players.append(player)
-                                        st.session_state.captain_id = player["id"]
-                                        st.experimental_rerun()
-                            elif st.session_state.captain_id != player["id"]:
-                                if st.button(f"Make CAPTAIN", key=f"make_captain_{player['id']}"):
+                        else:
+                            if st.button(f"Remove", key=f"remove_{player['id']}"):
+                                st.session_state.selected_players = [p for p in st.session_state.selected_players if p["id"] != player["id"]]
+                                if st.session_state.captain_id == player["id"]:
+                                    st.session_state.captain_id = None
+                                st.experimental_rerun()
+                    
+                    with col_b:
+                        if player["id"] not in [p["id"] for p in st.session_state.selected_players]:
+                            if len(st.session_state.selected_players) < 6:
+                                if st.button(f"Add as CAPTAIN", key=f"captain_{player['id']}"):
+                                    st.session_state.selected_players.append(player)
                                     st.session_state.captain_id = player["id"]
                                     st.experimental_rerun()
+                        elif st.session_state.captain_id != player["id"]:
+                            if st.button(f"Make CAPTAIN", key=f"make_captain_{player['id']}"):
+                                st.session_state.captain_id = player["id"]
+                                st.experimental_rerun()
+        
+        # Show selected lineup
+        st.header("Your Dawg Bowl Lineup")
+        
+        if len(st.session_state.selected_players) > 0:
+            total_salary = sum(player["salary"] for player in st.session_state.selected_players)
+            remaining_salary = salary_cap - total_salary
             
-            # Show selected lineup
-            st.header("Your Lineup")
+            st.write(f"Salary: ${total_salary:,} / ${salary_cap:,} (${remaining_salary:,} remaining)")
             
-            if len(st.session_state.selected_players) > 0:
-                total_salary = sum(player["salary"] for player in st.session_state.selected_players)
-                remaining_salary = salary_cap - total_salary
-                
-                st.write(f"Salary: ${total_salary:,} / ${salary_cap:,} (${remaining_salary:,} remaining)")
-                
-                # Progress bar for salary cap
-                st.progress(min(1.0, total_salary / salary_cap))
-                
-                # Display roster
-                cols = st.columns(6)
-                for i, player in enumerate(st.session_state.selected_players):
-                    with cols[i]:
-                        is_captain = player["id"] == st.session_state.captain_id
-                        position_label = "CAPTAIN" if is_captain else "FLEX"
-                        
-                        st.markdown(f"""
-                        <div class="player-card {'captain' if is_captain else ''}">
-                            <div class="player-name">{player["username"]}</div>
-                            <div class="player-details">{position_label} | {player["team"]}</div>
-                            <div class="player-stats">${player["salary"]}</div>
-                            <div class="player-stats">Avg Finish: {player["avg_finish"]}</div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                
-                # Check if lineup is valid for submission
-                if len(st.session_state.selected_players) == 6 and st.session_state.captain_id is not None and total_salary <= salary_cap:
-                    if st.button("Submit Lineup", type="primary"):
-                        # Simulate contest results
-                        results, total = simulate_contest_results(st.session_state.selected_players, st.session_state.captain_id)
-                        st.session_state.simulation_results = results
-                        st.session_state.total_points = total
-                        st.session_state.simulated = True
-                        st.experimental_rerun()
-                else:
-                    if len(st.session_state.selected_players) < 6:
-                        st.warning(f"Please select {6 - len(st.session_state.selected_players)} more fantasy players")
-                    elif st.session_state.captain_id is None:
-                        st.warning("Please select a captain")
-                    elif total_salary > salary_cap:
-                        st.error(f"Lineup exceeds salary cap by ${total_salary - salary_cap:,}")
+            # Progress bar for salary cap
+            st.progress(min(1.0, total_salary / salary_cap))
+            
+            # Display roster
+            cols = st.columns(6)
+            for i, player in enumerate(st.session_state.selected_players):
+                with cols[i]:
+                    is_captain = player["id"] == st.session_state.captain_id
+                    position_label = "CAPTAIN" if is_captain else "FLEX"
+                    
+                    st.markdown(f"""
+                    <div class="player-card {'captain' if is_captain else ''}">
+                        <div class="player-name">{player["name"]}</div>
+                        <div class="player-details">{position_label} | {player["team"]}</div>
+                        <div class="player-stats">${player["salary"]}</div>
+                        <div class="player-stats">Dawg Rating: {player["dawg_rating"]}/10</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+            
+            # Check if lineup is valid for submission
+            if len(st.session_state.selected_players) == 6 and st.session_state.captain_id is not None and total_salary <= salary_cap:
+                if st.button("Submit Lineup", type="primary"):
+                    # Simulate contest results
+                    results, total = simulate_dawg_bowl_performance(st.session_state.selected_players, st.session_state.captain_id)
+                    st.session_state.simulation_results = results
+                    st.session_state.total_points = total
+                    st.session_state.simulated = True
+                    st.experimental_rerun()
+            else:
+                if len(st.session_state.selected_players) < 6:
+                    st.warning(f"Please select {6 - len(st.session_state.selected_players)} more players")
+                elif st.session_state.captain_id is None:
+                    st.warning("Please select a captain")
+                elif total_salary > salary_cap:
+                    st.error(f"Lineup exceeds salary cap by ${total_salary - salary_cap:,}")
     
     else:
         # Show simulation results
-        st.header("Contest Results")
+        st.header("Dawg Bowl Performance Results")
         
         # Add a back button
-        if st.button("Create New Entry"):
+        if st.button("Create New Lineup"):
             st.session_state.selected_players = []
             st.session_state.captain_id = None
             st.session_state.simulated = False
@@ -414,101 +347,138 @@ def main():
         # Visualize player contributions
         fig = px.bar(
             [result for result in st.session_state.simulation_results],
-            x="username",
+            x="name",
             y="final_points",
             color="team",
             title="Fantasy Points by Player",
-            labels={"username": "Fantasy Player", "final_points": "Fantasy Points", "team": "Team"},
+            labels={"name": "Player", "final_points": "Fantasy Points", "team": "Team"},
             text="final_points"
         )
         fig.update_traces(texttemplate='%{text:.1f}', textposition='outside')
         fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
         st.plotly_chart(fig, use_container_width=True)
         
-        # Create a table showing player finish positions
-        st.subheader("Player Finish Positions")
+        # Display detailed stats table
+        st.subheader("Player Performance Details")
         
+        performance_data = []
         for result in st.session_state.simulation_results:
-            if result["multiplier"] > 1:
-                captain_label = " (CAPTAIN)"
-            else:
-                captain_label = ""
-                
-            st.markdown(f"""
-            <div class="player-card {'captain' if result['multiplier'] > 1 else ''}">
-                <div class="player-name">{result['username']}{captain_label}</div>
-                <div class="player-details">{result['team']}</div>
-                <div class="player-stats">
-                    <b>Finish Position:</b> {result['finish_position']}{get_position_suffix(result['finish_position'])} place
+            performance_data.append({
+                "Player": f"{result['name']} {'(C)' if result['multiplier'] > 1 else ''}",
+                "PTS": result["points"],
+                "REB": result["rebounds"],
+                "AST": result["assists"],
+                "BLK": result["blocks"],
+                "STL": result["steals"],
+                "Base Points": round(result["fantasy_points"], 1),
+                "Multiplier": result["multiplier"],
+                "Total Points": round(result["final_points"], 1)
+            })
+        
+        performance_df = pd.DataFrame(performance_data)
+        st.table(performance_df)
+        
+        # Show detailed player performances
+        st.subheader("Player Breakdown")
+        
+        col1, col2 = st.columns(2)
+        
+        # Captain highlight in first column
+        captain = next((p for p in st.session_state.simulation_results if p["multiplier"] > 1), None)
+        with col1:
+            if captain:
+                st.markdown("### Captain Performance")
+                st.markdown(f"""
+                <div class="player-card captain">
+                    <div class="player-name">{captain['name']} (CAPTAIN)</div>
+                    <div class="player-details">{captain['team']} | Dawg Rating: {captain['dawg_rating']}/10</div>
+                    <div class="player-stats">
+                        <b>Stats:</b> {captain['points']} PTS, {captain['rebounds']} REB, 
+                        {captain['assists']} AST, {captain['blocks']} BLK, {captain['steals']} STL
+                    </div>
+                    <div class="player-stats">
+                        <b>Fantasy Points:</b> {captain['fantasy_points']:.1f} × {captain['multiplier']} = {captain['final_points']:.1f}
+                    </div>
                 </div>
-                <div class="player-stats">
-                    <b>Fantasy Points:</b> {result['fantasy_points']:.1f} × {result['multiplier']} = {result['final_points']:.1f}
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
         
-        # Show payout structure
-        st.header("Contest Payout Structure")
-        contest_id = st.session_state.selected_contest
-        contests = get_available_contests()
-        selected_contest = next((c for c in contests if c["id"] == contest_id), None)
-        
-        if selected_contest:
-            prize_pool = selected_contest["prize_pool"]
+        # Team composition chart
+        with col2:
+            st.markdown("### Team Composition")
+            team_data = {}
+            for result in st.session_state.simulation_results:
+                if result["team"] in team_data:
+                    team_data[result["team"]] += 1
+                else:
+                    team_data[result["team"]] = 1
             
-            payout_data = {
-                "Position": ["1st", "2nd", "3rd", "4th", "5th", "6-10th", "11-20th"],
-                "Payout": [
-                    f"${int(prize_pool * 0.25):,}",
-                    f"${int(prize_pool * 0.15):,}",
-                    f"${int(prize_pool * 0.10):,}",
-                    f"${int(prize_pool * 0.07):,}",
-                    f"${int(prize_pool * 0.05):,}",
-                    f"${int(prize_pool * 0.03):,} each",
-                    f"${int(prize_pool * 0.01):,} each"
-                ]
-            }
-            
-            payout_df = pd.DataFrame(payout_data)
-            st.table(payout_df)
+            fig = px.pie(
+                names=list(team_data.keys()),
+                values=list(team_data.values()),
+                title="Players by Team"
+            )
+            st.plotly_chart(fig, use_container_width=True)
         
-        # Mock user leaderboard
-        st.header("Your Contest Results")
-        user_score = random.uniform(300, 400)  # Random score for the user
+        # Show dawg rating distribution
+        st.subheader("Dawg Rating Distribution")
+        dawg_ratings = [player["dawg_rating"] for player in st.session_state.simulation_results]
+        
+        fig = px.histogram(
+            x=dawg_ratings,
+            nbins=10,
+            range_x=[5, 10],
+            labels={"x": "Dawg Rating"},
+            title="Distribution of Dawg Ratings in Your Lineup"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Mock leaderboard
+        st.header("Global Leaderboard")
+        
+        # Generate random scores around the user's score
+        user_score = st.session_state.total_points
+        other_scores = [random.uniform(user_score * 0.8, user_score * 1.2) for _ in range(9)]
+        other_scores.append(user_score)
+        all_scores = sorted(other_scores, reverse=True)
+        user_rank = all_scores.index(user_score) + 1
         
         leaderboard_data = {
-            "Rank": [1, 2, 3, "...", 15, "...", 42],
-            "User": ["FantasyPro99", "DFSChamp", "NBA_Lineup_God", "...", "You", "...", "LastPlace"],
-            "Points": [389.5, 372.3, 366.8, "...", user_score, "...", 212.4],
-            "Winnings": [f"${int(prize_pool * 0.25):,}", f"${int(prize_pool * 0.15):,}", f"${int(prize_pool * 0.10):,}", "...", "$0", "...", "$0"]
+            "Rank": list(range(1, 11)),
+            "User": ["DawgMaster", "HustleKing", "CourtGeneral", "DefenseWizard", "FlexCapitol", 
+                     "You" if i == user_rank - 1 else f"Player{i+1}" for i in range(10)],
+            "Points": [round(score, 2) for score in all_scores],
+            "Prize": ["$1,000", "$500", "$250", "$100", "$50", "$25", "$25", "$25", "$25", "$0"]
         }
+        
+        # Adjust the user's entry
+        leaderboard_data["User"][user_rank - 1] = "You"
         
         leaderboard_df = pd.DataFrame(leaderboard_data)
         st.table(leaderboard_df)
         
-        # Recommendations for next contest
-        st.header("Recommendations for Next Contest")
-        st.write("Based on today's results, consider these changes for your next entry:")
+        # Strategy recommendations
+        st.header("Strategy Insights")
         
-        recommendations = [
-            "Choose players with more consistent top-10 finishes",
-            "Diversify your lineup with players from different teams",
-            "Consider lower-salary players who are trending upward",
-            "Pick a captain who specializes in the specific game format being played"
-        ]
+        # Calculate some insights
+        avg_dawg_rating = sum(player["dawg_rating"] for player in st.session_state.simulation_results) / len(st.session_state.simulation_results)
+        captain_dawg_rating = next((p["dawg_rating"] for p in st.session_state.simulation_results if p["multiplier"] > 1), 0)
         
-        for rec in recommendations:
-            st.markdown(f"- {rec}")
-
-def get_position_suffix(position):
-    if position % 10 == 1 and position != 11:
-        return "st"
-    elif position % 10 == 2 and position != 12:
-        return "nd"
-    elif position % 10 == 3 and position != 13:
-        return "rd"
-    else:
-        return "th"
+        st.write(f"Your lineup's average Dawg Rating: {avg_dawg_rating:.1f}/10")
+        st.write(f"Your captain's Dawg Rating: {captain_dawg_rating}/10")
+        
+        if captain_dawg_rating > 9:
+            st.success("Great captain choice! High Dawg Rating players make excellent captains.")
+        elif captain_dawg_rating < 8:
+            st.warning("Consider selecting a captain with a higher Dawg Rating next time.")
+        
+        if avg_dawg_rating > 8.5:
+            st.success("Your lineup has excellent overall Dawg mentality!")
+        elif avg_dawg_rating < 7.5:
+            st.warning("Try selecting players with higher Dawg Ratings to improve your score.")
+        
+        # Share or save button
+        if st.button("Share Results"):
+            st.success("Results shared! (This would connect to social media in a real app)")
 
 if __name__ == "__main__":
     main()
