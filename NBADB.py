@@ -43,27 +43,30 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Mock data - just player names and salaries
+# Player names and salaries for the NBA Dawg Bowl
 def get_dawg_bowl_contestants():
     return [
-        {"id": 101, "name": "SamOlson31", "salary": 9800},
-        {"id": 102, "name": "In3us", "salary": 10200},
-        {"id": 103, "name": "bestballviper", "salary": 10500},
-        {"id": 104, "name": "DFSKing99", "salary": 9500},
-        {"id": 105, "name": "NBAGuru42", "salary": 8800},
-        {"id": 106, "name": "FantasyPro", "salary": 9300},
-        {"id": 107, "name": "CelticsNation", "salary": 8400},
-        {"id": 108, "name": "LakeShow23", "salary": 8900},
-        {"id": 109, "name": "HoopDreams", "salary": 7900},
-        {"id": 110, "name": "StatKing", "salary": 7600},
-        {"id": 111, "name": "DFSmaster", "salary": 9400},
-        {"id": 112, "name": "LineupLock", "salary": 9100},
-        {"id": 113, "name": "OptimalDFS", "salary": 8600},
-        {"id": 114, "name": "PickSixer", "salary": 7100},
-        {"id": 115, "name": "CapWiz", "salary": 7400},
-        {"id": 116, "name": "FadeThePublic", "salary": 8200},
-        {"id": 117, "name": "SlateBreaker", "salary": 9000},
-        {"id": 118, "name": "ValueHunter", "salary": 8000},
+        {"id": 101, "name": "spartan", "salary": 9800},
+        {"id": 102, "name": "lofireball15", "salary": 9500},
+        {"id": 103, "name": "jordanchand", "salary": 8900},
+        {"id": 104, "name": "chezze", "salary": 9200},
+        {"id": 105, "name": "fflinx", "salary": 10100},
+        {"id": 106, "name": "lavalord", "salary": 8600},
+        {"id": 107, "name": "welchman", "salary": 7900},
+        {"id": 108, "name": "lolhotdogz", "salary": 8200},
+        {"id": 109, "name": "thewood1105", "salary": 9300},
+        {"id": 110, "name": "weather1981", "salary": 7600},
+        {"id": 111, "name": "jtmckenzi", "salary": 8100},
+        {"id": 112, "name": "in3us", "salary": 10200},
+        {"id": 113, "name": "bestballviper", "salary": 10500},
+        {"id": 114, "name": "awe419", "salary": 7800},
+        {"id": 115, "name": "crblake2", "salary": 8400},
+        {"id": 116, "name": "smerenda8", "salary": 7500},
+        {"id": 117, "name": "generalblue", "salary": 8800},
+        {"id": 118, "name": "bamntru", "salary": 9100},
+        {"id": 119, "name": "patrickbarnesyoutube", "salary": 7400},
+        {"id": 120, "name": "dallas102701", "salary": 8700},
+        {"id": 121, "name": "babystevie", "salary": 9000},
     ]
 
 def simulate_performance(selected_players, captain_id):
