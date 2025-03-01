@@ -335,7 +335,15 @@ def main():
         st.header("Your Lineup")
         
         if len(st.session_state.selected_players) > 0:
-            total_salary = sum(player["salary"] for player in st.session_state.selected_players)
+            # Calculate total salary with captain costing 1.5x
+            total_salary = 0
+            for player in st.session_state.selected_players:
+                if player["id"] == st.session_state.captain_id:
+                    # Captain costs 1.5x salary
+                    total_salary += int(player["salary"] * 1.5)
+                else:
+                    total_salary += player["salary"]
+                    
             remaining_salary = salary_cap - total_salary
             
             st.write(f"Salary: ${total_salary:,} / ${salary_cap:,} (${remaining_salary:,} remaining)")
@@ -354,7 +362,7 @@ def main():
                     <div class="player-card {'captain' if is_captain else ''}">
                         <div class="player-name">{player["name"]}</div>
                         <div class="player-details">{position_label}</div>
-                        <div class="player-details">${player["salary"]}</div>
+                        <div class="player-details">${player["salary"]} {f"(${int(player['salary'] * 1.5):,} as CPT)" if is_captain else ""}</div>
                     </div>
                     """, unsafe_allow_html=True)
             
