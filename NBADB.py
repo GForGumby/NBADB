@@ -184,9 +184,7 @@ def main():
         After the contest concludes, the admin can enter the fantasy points for each player and see who wins!
         """)
         
-        st.header("Settings")
-        salary_cap = st.slider("Salary Cap", 50000, 50000, 50000, 1000)
-        
+     
         # Admin section in sidebar
         st.header("Admin Functions")
         admin_password = st.text_input("Admin Password", type="password")
