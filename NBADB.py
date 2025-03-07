@@ -185,7 +185,7 @@ def main():
         """)
         
         st.header("Settings")
-        salary_cap = st.slider("Salary Cap", 40000, 60000, 50000, 1000)
+        salary_cap = st.slider("Salary Cap", 50000, 50000, 50000, 1000)
         
         # Admin section in sidebar
         st.header("Admin Functions")
